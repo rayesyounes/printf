@@ -7,8 +7,6 @@
  *
  * Return: number of characters printed.
  */
-
-
 int print_decimal(va_list args)
 {
 	int num = va_arg(args, int);
