@@ -48,7 +48,7 @@ int _vaprintf(const char *format, va_list args)
 	return (len);
 }
 
-/*
+/**
  * _printf - prints a formatted string to stdout, similar to printf
  * @format: contains the format specification for the output
  *

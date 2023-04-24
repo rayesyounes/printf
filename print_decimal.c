@@ -1,8 +1,8 @@
 #include "main.h"
 
-/*
+/**
  * print_decimal - prints integer to standard output using _putchar.
- *
+ * @args: arguments
  * Description: passes a long integer argumen to va_arg.
  *
  * Return: number of characters printed.
