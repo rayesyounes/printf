@@ -15,7 +15,7 @@ int _vaprintf(const char *format, va_list args)
 {
 	int len = 0;
 
-	if (!format || !format[0])
+	if (!format || (format[0] == '%' && format[1] == '\0'))
 		return (-1);
 
 	while (*format)
