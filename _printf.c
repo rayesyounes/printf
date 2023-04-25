@@ -1,78 +1,51 @@
 #include "main.h"
+#include <limits.h>
+#include <stdio.h>
 
+/* BY Rayes Younes & Zakaria Oumellouk */
 /**
- * _vaprintf - Perform formatted output to standard output
- * @format: format string specifying how to format the output
- * @args: varg list containing values to be formatted
- *
- * This function helps the _printf function by reading the format string
- * character by character to call the appropriate helper function
- * to print the argument values formatted
- *
- * Return: number of characters written to standard output
+ * _printf - produces output according to a format
+ * @format: format string containing the characters and the specifiers
+ * Description: this function will call the call_print() function that will
+ * determine which printing function to call depending on the conversion
+ * specifiers contained into fmt
+ * Return: length of the formatted output string
  */
-int _vaprintf(const char *format, va_list args)
-{
-	int len = 0;
-
-	if (!format || (format[0] == '%' && format[1] == '\0'))
-		return (-1);
-
-	while (*format)
-	{
-		if (*format == '%')
-		{
-			format++;
-			switch (*format)
-			{
-				case 'c':
-					len += print_char(args);
-					break;
-				case 's':
-					len += print_string(args);
-					break;
-				case 'd':
-				case 'i':
-					len += print_decimal(args);
-					break;
-				case '%':
-					_putchar('%');
-					len++;
-					break;
-			}
-		}
-		else
-		{
-			_putchar(*format);
-			len++;
-		}
-		format++;
-	}
-	return (len);
-}
-
-/**
- * _printf - prints a formatted string to stdout, similar to printf
- * @format: contains the format specification for the output
- *
- * This function performs formatted output to standard output,
- * It takes a format string and a variable number of arguments,
- * processes the format string and arguments,
- * and outputs the result to standard output.
- *
- * Return: the number of characters printed
- */
-
 int _printf(const char *format, ...)
 {
-	int len;
-	va_list args;
+	int (*pfunc)(va_list, flags_t *);
+	const char *p;
+	va_list arguments;
+	flags_t flags = {0, 0, 0};
 
-	va_start(args, format);
+	register int counter = 0;
 
-	len = _vaprintf(format, args);
+	va_start(arguments, format);
+	if (!format || (format[0] == '%' && !format[1]))
+		return (-1);
+	if (format[0] == '%' && format[1] == ' ' && !format[2])
+		return (-1);
+	for (p = format; *p; p++)
+	{
+		if (*p == '%')
+		{
+			p++;
+			if (*p == '%')
+			{
+				counter += _putchar('%');
+				continue;
+			}
+			while (call_flag(*p, &flags))
+				p++;
+			pfunc = call_print(*p);
+			counter += (pfunc)
+				? pfunc(arguments, &flags)
+				: _printf("%%%c", *p);
+		} else
+			counter += _putchar(*p);
+	}
+	_putchar(-1);
+	va_end(arguments);
+	return (counter);
 
-	va_end(args);
-
-	return (len);
 }
