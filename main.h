@@ -3,27 +3,64 @@
 
 #include <stdlib.h>
 #include <stdarg.h>
-#include <unistd.h>
-#include <stdio.h>
+
+/* BY Rayes Younes & Zakaria Oumellouk */
+/**
+ * struct flags - struct containing flags to "turn on"
+ * when a flag specifier is passed to _printf()
+ * @plus: flag for the '+' character
+ * @space: flag for the ' ' character
+ * @hash: flag for the '#' character
+ */
+typedef struct flags
+{
+	int plus;
+	int space;
+	int hash;
+} flags_t;
 
 /**
- * struct format - associate conversion specifiers with corresponding functions
- * @specifier: type char pointer to identify which conversion specifier
- * @conversion_func: func pointer to a function that takes a va_list of args
+ * struct printHandler - struct to choose the right function depending
+ * on the format specifier passed to _printf()
+ * @c: format specifier
+ * @f: pointer to the correct printing function
  */
-typedef struct format
+typedef struct printHandler
 {
-	char *specifier;
-	int (*conversion_func)();
-} spec_handler;
+	char c;
+	int (*f)(va_list ap, flags_t *f);
+} ph;
 
+/* print_nums */
+int print_int(va_list l, flags_t *f);
+void print_number(int n);
+int print_unsigned(va_list l, flags_t *f);
+int count_digit(int i);
+
+/* print_bases */
+int print_hex(va_list l, flags_t *f);
+int print_hex_big(va_list l, flags_t *f);
+int print_binary(va_list l, flags_t *f);
+int print_octal(va_list l, flags_t *f);
+
+/* converter */
+char *convert(unsigned long int num, int base, int lowercase);
+
+/* _printf */
 int _printf(const char *format, ...);
-int _vaprintf(const char *format, va_list args);
 
-int print_char(va_list args);
-int print_string(va_list args);
-int print_decimal(va_list args);
+/* call_print */
+int (*call_print(char s))(va_list, flags_t *);
 
+/* call_flag */
+int call_flag(char s, flags_t *f);
+
+/* print_alpha */
+int print_string(va_list l, flags_t *f);
+int print_char(va_list l, flags_t *f);
+
+/* write_funcs */
 int _putchar(char c);
+int _puts(char *str);
 
 #endif
