@@ -3,75 +3,35 @@
 
 #include <stdlib.h>
 #include <stdarg.h>
-
-/* BY Rayes Younes & Zakaria Oumellouk */
-/**
- * struct flags - struct containing flags to "turn on"
- * when a flag specifier is passed to _printf()
- * @plus: flag for the '+' character
- * @space: flag for the ' ' character
- * @hash: flag for the '#' character
- */
-typedef struct flags
-{
-	int plus;
-	int space;
-	int hash;
-} flags_t;
+#include <unistd.h>
+#include <stdio.h>
 
 /**
- * struct printHandler - struct to choose the right function depending
- * on the format specifier passed to _printf()
- * @c: format specifier
- * @f: pointer to the correct printing function
+ * struct format - associate conversion specifiers with corresponding functions
+ * @specifier: type char pointer to identify which conversion specifier
+ * @conversion_func: func pointer to a function that takes a va_list of args
  */
-typedef struct printHandler
+typedef struct format
 {
-	char c;
-	int (*f)(va_list ap, flags_t *f);
-} ph;
+	char *specifier;
+	int (*conversion_func)(va_list);
+} spec_handler;
 
-/* print_nums */
-int print_int(va_list l, flags_t *f);
-void print_number(int n);
-int print_unsigned(va_list l, flags_t *f);
-int count_digit(int i);
-
-/* print_bases */
-int print_hex(va_list l, flags_t *f);
-int print_hex_big(va_list l, flags_t *f);
-int print_binary(va_list l, flags_t *f);
-int print_octal(va_list l, flags_t *f);
-
-/* converters */
-char *convert(unsigned long int num, int base, int lowercase);
-
-/* _printf */
 int _printf(const char *format, ...);
+int _printf_assist(const char *format, va_list args);
 
-/* call_print */
-int (*call_print(char s))(va_list, flags_t *);
+int (*print_case(const char *format))(va_list);
 
-/* call_flag */
-int call_flag(char s, flags_t *f);
+int print_char(va_list args);
+int print_str(va_list list);
+int print_perc(va_list list);
+int print_int(va_list list);
 
-/* print_alpha */
-int print_string(va_list l, flags_t *f);
-int print_char(va_list l, flags_t *f);
+unsigned int _strlen(char *s);
+void reverse_str(char s[]);
+void _itoa(long n, char s[]);
 
-/* write_funcs */
 int _putchar(char c);
 int _puts(char *str);
-
-/* print_custom */
-int print_rot13(va_list l, flags_t *f);
-int print_rev(va_list l, flags_t *f);
-int print_bigS(va_list l, flags_t *f);
-
-/* print_address */
-int print_address(va_list l, flags_t *f);
-
-/* print_percent */
-int print_percent(va_list l, flags_t *f);
 
 #endif
